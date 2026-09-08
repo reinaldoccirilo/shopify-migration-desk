@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Engenharia Shopify de ambito e preco fixos para os prazos da plataforma em 2026: Customer Account API, React Router e Shopify App Pricing.">
+<meta name="author" content="Reinaldo Cirilo">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shopify Migration Desk">
+<meta property="og:description" content="Engenharia Shopify de ambito e preco fixos para os prazos da plataforma em 2026: Customer Account API, React Router e Shopify App Pricing.">
+<meta property="og:locale" content="pt_PT">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='13' font-size='13'>&#128295;</text></svg>">
+<title>Shopify Migration Desk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F6F8F8;
+    --surface: #FFFFFF;
+    --ink: #12181B;
+    --ink-muted: #56686E;
+    --hairline: #D9E2E3;
+    --accent: #0F5F6B;
+    --accent-soft: #E4EFF0;
+    --amber: #96590A;
+    --amber-soft: #FBF0DC;
+    --red: #97302A;
+    --shadow: 0 1px 2px rgba(18, 24, 27, .06);
+
+    --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    --measure: 66ch;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0E1417;
+      --surface: #161F23;
+      --ink: #E7EEEF;
+      --ink-muted: #93A6AC;
+      --hairline: #2A383D;
+      --accent: #57B6C2;
+      --accent-soft: #13323A;
+      --amber: #DCA451;
+      --amber-soft: #33270F;
+      --red: #E08079;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground: #0E1417;
+    --surface: #161F23;
+    --ink: #E7EEEF;
+    --ink-muted: #93A6AC;
+    --hairline: #2A383D;
+    --accent: #57B6C2;
+    --accent-soft: #13323A;
+    --amber: #DCA451;
+    --amber-soft: #33270F;
+    --red: #E08079;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 16.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 56px 28px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+  }
+
+  .col { max-width: var(--measure); }
+
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+
+  h1 {
+    font-size: clamp(2.1rem, 5.2vw, 3.1rem);
+    font-weight: 700;
+    letter-spacing: -.022em;
+    line-height: 1.08;
+  }
+
+  h2 {
+    font-size: 1.42rem;
+    font-weight: 700;
+    letter-spacing: -.012em;
+  }
+
+  h3 {
+    font-size: 1.03rem;
+    font-weight: 600;
+    letter-spacing: -.005em;
+  }
+
+  p { margin: 0; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .lede { font-size: 1.12rem; color: var(--ink-muted); }
+
+  header { display: flex; flex-direction: column; gap: 18px; }
+
+  /* ---- Deadline table: the thesis ---- */
+
+  .deadlines {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .table-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+    font-size: .95rem;
+  }
+
+  caption {
+    text-align: left;
+    color: var(--ink-muted);
+    font-size: .88rem;
+    padding-bottom: 12px;
+  }
+
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .11em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding: 0 14px 9px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  td {
+    padding: 15px 14px 15px 0;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+
+  tr td:first-child { padding-left: 14px; border-left: 3px solid transparent; }
+  tr.sev-now td:first-child { border-left-color: var(--red); }
+  tr.sev-soon td:first-child { border-left-color: var(--amber); }
+  tr.sev-done td:first-child { border-left-color: var(--accent); }
+
+  .when {
+    font-family: var(--mono);
+    font-size: .84rem;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .what { font-weight: 500; }
+  .so-what { color: var(--ink-muted); font-size: .93rem; }
+
+  /* ---- Packages ---- */
+
+  .packages {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+    gap: 1px;
+    background: var(--hairline);
+    border: 1px solid var(--hairline);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .pkg {
+    background: var(--surface);
+    padding: 26px 24px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .pkg-head { display: flex; flex-direction: column; gap: 6px; }
+
+  .price {
+    font-family: var(--mono);
+    font-size: 1.28rem;
+    font-weight: 500;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .deadline-tag {
+    font-family: var(--mono);
+    font-size: .7rem;
+    font-weight: 500;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--red);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .deadline-tag::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    flex: none;
+  }
+
+  .term {
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .pkg ul { margin: 0; padding-left: 1.05em; display: flex; flex-direction: column; gap: 6px; }
+  .pkg li { font-size: .93rem; color: var(--ink-muted); }
+  .pkg li strong { color: var(--ink); font-weight: 500; }
+
+  /* ---- Evidence ---- */
+
+  .evidence {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 28px 36px;
+  }
+
+  .ev { display: flex; flex-direction: column; gap: 7px; }
+
+  .ev-figure {
+    font-family: var(--mono);
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -.02em;
+  }
+
+  .ev-label { font-size: .93rem; color: var(--ink-muted); }
+
+  .note {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 18px 20px;
+    border-radius: 0 3px 3px 0;
+    font-size: .96rem;
+  }
+
+  .contact {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 28px 26px;
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 3px;
+    box-shadow: var(--shadow);
+  }
+
+  .contact a {
+    font-family: var(--mono);
+    font-size: 1.06rem;
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+    align-self: flex-start;
+  }
+
+  .contact a:hover, .contact a:focus-visible { background: var(--accent-soft); }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding-top: 22px;
+    color: var(--ink-muted);
+    font-size: .86rem;
+  }
+
+  section { display: flex; flex-direction: column; gap: 20px; }
+</style>
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="col">
+    <p class="eyebrow">Engenharia Shopify · Portugal</p>
+    <h1>A tua app tem prazos em 2026. Alguns já passaram.</h1>
+    <p class="lede">
+      A plataforma mudou três vezes este ano — o template, a faturação e a
+      autenticação de clientes. Trabalho de âmbito e preço fixos para pôr a tua
+      app em dia, sem alterar o que ela faz.
+    </p>
+  </header>
+
+  <section class="deadlines">
+    <h2>O que mudou, e o que acontece se não mudares</h2>
+    <div class="table-scroll">
+      <table>
+        <caption>Verificado na documentação oficial do Shopify a 6 de setembro de 2026.</caption>
+        <thead>
+          <tr>
+            <th scope="col">Quando</th>
+            <th scope="col">O que mudou</th>
+            <th scope="col">Consequência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sev-now">
+            <td class="when">1 dez 2026</td>
+            <td class="what">Customer Account API obrigatória em apps de devoluções e subscrições com fluxos self-service</td>
+            <td class="so-what">Quem não cumprir <strong>arrisca perder o selo Built for Shopify</strong>.</td>
+          </tr>
+          <tr class="sev-soon">
+            <td class="when">12 mai 2026</td>
+            <td class="what">Managed Pricing passa a Shopify App Pricing; a Billing API fica legado</td>
+            <td class="so-what">Quem lê dados de subscrição ou trata de redirects de aprovação tem de atualizar as integrações.</td>
+          </tr>
+          <tr class="sev-soon">
+            <td class="when">2026</td>
+            <td class="what">O template oficial passou de Remix para React&nbsp;Router</td>
+            <td class="so-what"><code>@shopify/shopify-app-remix</code> só se mantém em apps existentes. Apps novas usam React Router.</td>
+          </tr>
+          <tr class="sev-done">
+            <td class="when">1 jan 2025</td>
+            <td class="what">Revenue share: 0% até 1M USD acumulados, 15% acima</td>
+            <td class="so-what">O limiar passou de anual a vitalício. Muda a economia a longo prazo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Três trabalhos, âmbito fechado, preço fixo</h2>
+    <div class="packages">
+
+      <article class="pkg">
+        <div class="pkg-head">
+          <p class="deadline-tag">Prazo: 1 dez 2026</p>
+          <h3>Customer Account API</h3>
+          <p class="price">3.400 €</p>
+          <p class="term">3 semanas</p>
+        </div>
+        <ul>
+          <li>OAuth 2.0 com PKCE, troca e renovação de tokens</li>
+          <li>Armazenamento de tokens de cliente e verificadores PKCE</li>
+          <li>Preparo a candidatura a <strong>Protected Customer Data nível 2</strong>; a submissão é vossa</li>
+          <li><strong>Lançamento em caminho duplo</strong> — o portal antigo continua a funcionar enquanto o novo entra, para nenhum comprador ficar a meio</li>
+        </ul>
+      </article>
+
+      <article class="pkg">
+        <div class="pkg-head">
+          <h3>Remix → React Router</h3>
+          <p class="price">2.400 €</p>
+          <p class="term">2 semanas</p>
+        </div>
+        <ul>
+          <li>Migração de dependências e conversão de rotas</li>
+          <li>OAuth, sessões e handlers de webhook</li>
+          <li>Suite de testes a passar no fim</li>
+          <li><strong>Zero alterações de comportamento</strong> — os teus comerciantes não dão por nada</li>
+        </ul>
+      </article>
+
+      <article class="pkg">
+        <div class="pkg-head">
+          <h3>Billing API → App Pricing</h3>
+          <p class="price">1.600 €</p>
+          <p class="term">1 semana</p>
+        </div>
+        <ul>
+          <li>Configuração de planos e leitura de subscrições</li>
+          <li>Redirects de aprovação de cobrança</li>
+          <li>Gating por plano, com testes</li>
+          <li><strong>Cancelar funciona à primeira</strong> — faturação é 23% das avaliações de 1 e 2 estrelas</li>
+        </ul>
+      </article>
+
+      <article class="pkg">
+        <div class="pkg-head">
+          <h3>Auditoria de fiabilidade</h3>
+          <p class="price">1.200 €</p>
+          <p class="term">1 semana</p>
+        </div>
+        <ul>
+          <li>Relatório escrito dos modos de falha silenciosa</li>
+          <li>Visibilidade de erros e desenho de alertas</li>
+          <li>Distância ao limiar de <strong>500&nbsp;ms P95</strong> do Built for Shopify</li>
+          <li>Ordenado por perda de receita, não por gravidade técnica</li>
+        </ul>
+      </article>
+
+    </div>
+    <p class="col so-what">
+      Preço fechado antes de começar. Se o âmbito crescer, digo-o antes de trabalhar,
+      não na fatura. Se preferires não decidir às cegas, faço primeiro uma
+      <strong>avaliação de prontidão por 600 €</strong> em três dias: o que falta
+      exatamente na tua app, quanto tempo dá, e se afinal já cumpres — caso em que
+      te digo isso e não há trabalho nenhum a fazer.
+    </p>
+  </section>
+
+  <section>
+    <h2>Porquê eu</h2>
+    <div class="col">
+      <p>
+        Não venho da criação de apps Shopify. Venho de encontrar avarias que os
+        sistemas não reportam — que é exatamente onde as apps perdem
+        comerciantes. Nas avaliações negativas do App Store, faturação, suporte
+        sem resposta e apps que deixam de funcionar somam <strong>52%</strong>.
+        Funcionalidades em falta são <strong>3%</strong>, em último lugar.
+      </p>
+    </div>
+
+    <div class="evidence">
+      <div class="ev">
+        <p class="ev-figure">126</p>
+        <p class="ev-label">testes numa API Node/Fastify/PostgreSQL que desenhei e escrevi, com documentação de arquitetura, segurança e privacidade</p>
+      </div>
+      <div class="ev">
+        <p class="ev-figure">92</p>
+        <p class="ev-label">testes num motor de reconciliação em TypeScript que compara estado entre dois sistemas e recusa afirmar "sincronizado" quando não conseguiu verificar</p>
+      </div>
+      <div class="ev">
+        <p class="ev-figure">16</p>
+        <p class="ev-label">segfaults por segundo escondidos atrás de um reinício automático, num sistema meu — diagnosticados até à causa: uma ligação SQLite partilhada entre threads</p>
+      </div>
+      <div class="ev">
+        <p class="ev-figure">0</p>
+        <p class="ev-label">alertas emitidos por um sistema de monitorização que parecia saudável — a mesma variável servia de estado e de deduplicação, e silenciava o aviso para sempre</p>
+      </div>
+    </div>
+
+    <div class="note col">
+      <strong>Prática nova, sem lista de clientes.</strong> Não tenho testemunhos
+      para mostrar e não vou inventar nenhum. Avalia pelo que está acima: ou os
+      números e os prazos desta página batem certo com o que já sabes da
+      plataforma, ou não batem.
+    </div>
+  </section>
+
+  <section class="col">
+    <h2>Falar</h2>
+    <div class="contact">
+      <p>Diz-me o que tens e em que versão está. Respondo em 24 horas úteis com um âmbito e um preço, ou com um "isto não é para mim".</p>
+      <a href="mailto:shishagotham@gmail.com">shishagotham@gmail.com</a>
+      <p class="so-what">Reinaldo Cirilo · Almada, Portugal · fuso europeu</p>
+    </div>
+  </section>
+
+  <footer class="col">
+    Datas e limiares desta página vêm da documentação oficial do Shopify e do
+    changelog para programadores, consultados a 6 de setembro de 2026. Se algum
+    tiver mudado entretanto, diz — corrijo.
+  </footer>
+
+</div>
+</body>
+</html>
