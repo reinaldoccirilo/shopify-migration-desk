@@ -310,6 +310,7 @@
   html { -webkit-text-size-adjust: 100%; }
   body { margin: 0; }
   img { max-width: 100%; }
+  code { font-family: var(--mono); font-size: .88em; }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
   }
@@ -388,28 +389,33 @@
       <article class="pkg">
         <div class="pkg-head">
           <h3>Remix → React Router</h3>
-          <p class="price">2.400 €</p>
-          <p class="term">2 semanas</p>
+          <p class="price">700 €</p>
+          <p class="term">3 dias</p>
         </div>
         <ul>
-          <li>Migração de dependências e conversão de rotas</li>
-          <li>OAuth, sessões e handlers de webhook</li>
-          <li>Suite de testes a passar no fim</li>
-          <li><strong>Zero alterações de comportamento</strong> — os teus comerciantes não dão por nada</li>
+          <li><strong>O codemod oficial da Shopify faz a maior parte</strong> —
+            <code>npx codemod remix/2/react-router/upgrade</code></li>
+          <li>Eu faço o resto: confirmar que OAuth, webhooks e sessões continuam
+            a funcionar, e a suite de testes a passar</li>
+          <li>Limpeza das flags de futuro na configuração</li>
+          <li><strong>Se a vossa app for simples, corram o codemod sozinhos e não
+            me paguem nada.</strong> Digo-vos isso ao telefone, de graça</li>
         </ul>
       </article>
 
       <article class="pkg">
         <div class="pkg-head">
-          <h3>Billing API → App Pricing</h3>
-          <p class="price">1.600 €</p>
+          <h3>Preparação para App Pricing</h3>
+          <p class="price">900 €</p>
           <p class="term">1 semana</p>
         </div>
         <ul>
-          <li>Configuração de planos e leitura de subscrições</li>
-          <li>Redirects de aprovação de cobrança</li>
-          <li>Gating por plano, com testes</li>
-          <li><strong>Cancelar funciona à primeira</strong> — faturação é 23% das avaliações de 1 e 2 estrelas</li>
+          <li><strong>A migração completa ainda não é possível</strong> — a
+            ferramenta que move subscrições existentes está em testes por convite</li>
+          <li>O que se faz agora: criar, rever e testar os planos no App Pricing</li>
+          <li>Gating por plano e leitura de subscrições, com testes</li>
+          <li>Fica tudo pronto para o dia em que a ferramenta abrir.
+            <strong>Cobro esta parte, não a migração que ainda não existe</strong></li>
         </ul>
       </article>
 
@@ -428,6 +434,12 @@
       </article>
 
     </div>
+    <p class="col so-what">
+      Repara que dois destes preços são baixos, e dizem porquê. Um trabalho que a
+      Shopify já automatizou não vale duas semanas de fatura, e uma migração que a
+      plataforma ainda não permite terminar não se cobra hoje. Prefiro dizer-vos
+      isso do que descobrirem sozinhos depois de pagarem.
+    </p>
     <p class="col so-what">
       Preço fechado antes de começar. Se o âmbito crescer, digo-o antes de trabalhar,
       não na fatura. Se preferires não decidir às cegas, faço primeiro uma
